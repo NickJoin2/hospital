@@ -1,4 +1,4 @@
-FROM php:8.2.1-fpm-alpine
+FROM php:8.2-fpm-alpine3.17
 
 # Установка зависимостей системы
 RUN apk update && \
@@ -10,8 +10,9 @@ RUN apk update && \
         libjpeg-turbo-dev \
         libwebp-dev \
         zlib-dev \
+        freetype-dev \
         icu-dev && \
-    docker-php-ext-configure gd --with-jpeg --with-webp --with-zlib && \
+    docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql opcache intl bcmath sockets
 
 # Установка Composer
