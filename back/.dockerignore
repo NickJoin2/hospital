@@ -9,3 +9,4 @@ Dockerfile
 composer.phar
 composer.lock
 README.md
+docker-compose.yml
