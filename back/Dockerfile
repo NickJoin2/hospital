@@ -1,29 +1,23 @@
 FROM php:8.2-fpm-alpine
 
-# Установка зависимостей (альпийская версия использует apk)
-RUN apk add --no-cache \
-    git \
-    curl \
-    libpng-dev \
-    libzip-dev \
+# Установка только самых необходимых зависимостей
+RUN apk add --no-cache --virtual .build-deps \
+    $PHPIZE_DEPS \
     oniguruma-dev \
     libxml2-dev \
-    zip \
-    unzip \
+    && apk add --no-cache \
+    git \
+    curl \
+    libzip-dev \
     icu-dev \
     && docker-php-ext-install \
-    pdo \
     pdo_mysql \
     mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
     intl \
-    zip \
-    && docker-php-ext-enable opcache
+    xml \
+    && apk del .build-deps
 
-# Установка Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Установка Composer (без копирования из образа)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html
