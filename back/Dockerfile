@@ -1,17 +1,11 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-fpm
 
 # Установка зависимостей
 RUN apk update && apk add --no-cache \
-    git \
-    curl \
-    unzip \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    libwebp-dev \
-    zlib-dev \
-    icu-dev
+    linux-headers \
+    git curl unzip \
+    libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev icu-dev
 
-# Установка расширений PHP
 RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
     docker-php-ext-install -j$(nproc) gd pdo pdo_mysql opcache intl bcmath sockets
 
