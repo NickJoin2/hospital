@@ -1,12 +1,20 @@
 FROM php:8.2.1-fpm-alpine
 
-# Обновляем пакеты
-RUN apt-get update && apt-get upgrade -y
+# Устанавливаем необходимые зависимости для сборки расширений
+RUN apk add --no-cache \
+    gcc \
+    g++ \
+    make \
+    autoconf \
+    automake \
+    libtool \
+    musl-dev \
+    mysql-dev
 
-# Устанавливаем необходимые расширения
+# Обновляем индекс пакетов и обновляем системы (через apk, а не apt-get)
+RUN apk update && apk upgrade
+
+# Устанавливаем PHP-расширения PDO и MySQL
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Включаем расширение (не всегда нужно, так как install уже делает это)
-RUN docker-php-ext-enable pdo_mysql
-
-CMD ["php-fpm"]
+# CMD ["php-fpm"] — уже указан в базовом образе, поэтому не обязательно повторять
