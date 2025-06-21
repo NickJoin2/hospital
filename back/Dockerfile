@@ -1,45 +1,29 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
-# Обновляем ключи репозиториев и устанавливаем gnupg
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg \
-    ca-certificates \
-    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138 0E98404D386FA1D9 \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Устанавливаем зависимости
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
+# Установка зависимостей
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
     zip \
     unzip \
-    libzip-dev \
-    libonig-dev \
-    libxml2-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    git \
+    curl \
+    && docker-php-ext-install zip pdo pdo_mysql
 
-# Устанавливаем расширения PHP
-RUN docker-php-ext-install pdo_mysql mbstring xml zip
+# Установка Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Устанавливаем Composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# Рабочая директория
+WORKDIR /var/www/html
 
-# Устанавливаем рабочую директорию
-WORKDIR /var/www
-
-# Копируем файлы приложения
+# Копирование файлов (кроме указанных в .dockerignore)
 COPY . .
 
-# Устанавливаем зависимости Composer, если есть composer.json
-RUN if [ -f "composer.json" ]; then composer install --no-dev --optimize-autoloader; else echo "No composer.json found"; fi
+# Установка зависимостей Laravel
+RUN composer install --no-interaction --optimize-autoloader
 
-# Устанавливаем права доступа для Laravel
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
-    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# Права на запись
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Открываем порт
-EXPOSE 8000
+EXPOSE 9000
 
-# Запускаем встроенный сервер PHP
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php-fpm"]
