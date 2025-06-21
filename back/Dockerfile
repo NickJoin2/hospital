@@ -1,20 +1,24 @@
 FROM php:8.2.1-fpm-alpine
 
-# Устанавливаем необходимые зависимости для сборки расширений
-RUN apk add --no-cache \
-    gcc \
-    g++ \
-    make \
-    autoconf \
-    automake \
-    libtool \
-    musl-dev \
-    mysql-dev
+# Установка зависимостей
+RUN apk update && apk add --no-cache \
+    git \
+    curl \
+    unzip \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev
 
-# Обновляем индекс пакетов и обновляем системы (через apk, а не apt-get)
-RUN apk update && apk upgrade
+# Установка Composer
+RUN curl -sS https://getcomposer.org/installer  | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Устанавливаем PHP-расширения PDO и MySQL
-RUN docker-php-ext-install pdo pdo_mysql
+# Рабочая директория
+WORKDIR /var/www/html
 
-# CMD ["php-fpm"] — уже указан в базовом образе, поэтому не обязательно повторять
+# Копируем проект
+COPY . .
+
+# Устанавливаем зависимости
+RUN composer install --no-dev --optimize-autoloader
+
+CMD ["php", "artisan", "serve", "--host=0.0.0.0"]
