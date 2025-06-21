@@ -61,4 +61,21 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: laravel-phpmyadmin
     environment:
-      PMA_HOST:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "9000:80"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+# --- Объявление томов и сетей ---
+volumes:
+  mysql_data:
+    driver: local
+  app_node_modules:
+
+networks:
+  app-network:
+    driver: bridge
