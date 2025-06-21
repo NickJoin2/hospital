@@ -1,23 +1,21 @@
 FROM php:8.2-fpm-alpine
 
-# Установка только самых необходимых зависимостей
-RUN apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
-    oniguruma-dev \
-    libxml2-dev \
-    && apk add --no-cache \
-    git \
-    curl \
-    libzip-dev \
-    icu-dev \
-    && docker-php-ext-install \
+# Копируем скомпилированные расширения из builder
+COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
+COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
+
+# Включаем расширения
+RUN docker-php-ext-enable \
     pdo_mysql \
     mbstring \
     intl \
-    xml \
-    && apk del .build-deps
+    xml
 
-# Установка Composer (без копирования из образа)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Установка Composer
+RUN curl -sS https://getcomposer.org/installer  | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Рабочая директория
 WORKDIR /var/www/html
+
+# Команда по умолчанию (можно изменить под себя)
+CMD ["php-fpm"]
