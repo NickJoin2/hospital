@@ -1,7 +1,9 @@
 services:
-
-  web:
-    build: ./front
+  # React Frontend
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
     container_name: front-react-new
     ports:
       - "5173:5173"
@@ -10,52 +12,82 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+    networks:
+      - app-network
 
-
-  php:
-    build: ./back
+  # PHP Backend (Laravel)
+  backend:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
     container_name: laravel-php-new
     volumes:
       - ./back:/var/www/html
-    ports:
-      - "8000:8000"
-    command: php -S 0.0.0.0:8000 -t /var/www/html/public
+    environment:
+      - DB_HOST=mysql
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=secret
     depends_on:
       - mysql
+    networks:
+      - app-network
 
-  nginx:
-    image: nginx:latest
+  # Nginx
+  webserver:
+    image: nginx:alpine
     container_name: laravel-nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
-      - ./src:/var/www/html
+      - ./back:/var/www/html
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/ssl:/etc/nginx/ssl
     depends_on:
-      - php
+      - backend
+    networks:
+      - app-network
 
+  # MySQL
   mysql:
     image: mysql:8.0
     container_name: laravel-mysql
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - app-network
 
+  # phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: laravel-phpmyadmin
-    ports:
-      - "9000:80"
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: secret
+    ports:
+      - "8080:80"
     depends_on:
       - mysql
+    networks:
+      - app-network
 
-# --- Объявление томов ---
+# --- Объявление томов и сетей ---
 volumes:
   mysql_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
