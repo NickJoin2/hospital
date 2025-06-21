@@ -1,29 +1,31 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
 # Установка зависимостей
-RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
-    unzip \
+RUN apk update && apk add --no-cache \
     git \
     curl \
-    && docker-php-ext-install zip pdo pdo_mysql
+    unzip \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    zlib-dev \
+    icu-dev
 
-# Установка Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Установка расширений PHP
+RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
+    docker-php-ext-install -j$(nproc) gd pdo pdo_mysql opcache intl bcmath sockets
 
 # Рабочая директория
 WORKDIR /var/www/html
 
-# Копирование файлов (кроме указанных в .dockerignore)
+# Создание нужных директорий
+RUN mkdir -p /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/bootstrap/cache
+RUN chmod -R 777 /var/www/html/bootstrap/cache
+
+# Копируем проект
 COPY . .
 
-# Установка зависимостей Laravel
+# Устанавливаем зависимости
 RUN composer install --no-interaction --optimize-autoloader
-
-# Права на запись
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
