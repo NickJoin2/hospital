@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-alpine
 
 # Установка зависимостей
 RUN apk update && apk add --no-cache \
