@@ -1,0 +1,11 @@
+/vendor
+/node_modules
+/storage
+/bootstrap/cache
+.env
+.git
+.dockerignore
+Dockerfile
+composer.phar
+composer.lock
+README.md

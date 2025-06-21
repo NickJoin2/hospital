@@ -1,0 +1,19 @@
+{
+    "first_name": "Данила",
+    "middle_name": "Черняев",
+    "last_name": "Алексеевич",
+    "email": "nickjoin79@gmail.com",
+    "phone": "7834242423",
+    "department_id": "2",
+    "role_id": "7",
+    "credited_at": "2025-02-12T00:41:06.387637Z",
+    "id": 1
+}
+
+
+composer install
+php artisan key:generate
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan serve

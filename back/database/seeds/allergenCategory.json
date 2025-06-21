@@ -1,0 +1,52 @@
+[
+    {
+      "id": "1",
+      "allergen_category_name": "Бытовые аллергены",
+      "allergen_category_description": "Включают домашнюю пыль, клещей, шерсть животных и частицы насекомых."
+    },
+      {
+      "id": "2",
+      "allergen_category_name": "Пыльцевые аллергены",
+      "allergen_category_description": "Пыльца растений, вызывающая сезонные аллергические реакции."
+    },
+      {
+      "id": "3",
+      "allergen_category_name": "Эпидермальные аллергены",
+      "allergen_category_description": "Частицы кожи и шерсти животных, такие как кошки и собаки."
+    },
+      {
+      "id": "4",
+      "allergen_category_name": "Пищевые аллергены",
+      "allergen_category_description": "Аллергены, содержащиеся в продуктах питания, такие как молоко, яйца, орехи."
+    },
+      {
+      "id": "5",
+      "allergen_category_name": "Лекарственные аллергены",
+      "allergen_category_description": "Реакции на медикаменты, включая антибиотики и вакцины."
+    },
+      {
+      "id": "6",
+      "allergen_category_name": "Промышленные аллергены",
+      "allergen_category_description": "Аллергены, возникающие в результате воздействия химических веществ на рабочем месте."
+    },
+      {
+      "id": "7",
+      "allergen_category_name": "Инсектные аллергены",
+      "allergen_category_description": "Аллергены от укусов насекомых, таких как пчелы и оси."
+    },
+      {
+      "id": "8",
+      "allergen_category_name": "Грибковые аллергены",
+      "allergen_category_description": "Споры плесневых грибов и дрожжей, вызывающие аллергические реакции."
+    },
+      {
+      "id": "9",
+      "allergen_category_name": "Бактериальные аллергены",
+      "allergen_category_description": "Аллергены, связанные с бактериями и продуктами их жизнедеятельности."
+    },
+      {
+      "id": "10",
+      "allergen_category_name": "Паразитарные аллергены",
+      "allergen_category_description": "Антигены гельминтов и других паразитов, вызывающие иммунный ответ."
+    }
+    ]

@@ -1,0 +1,138 @@
+{
+    "ok": true,
+    "result": [
+        {
+            "update_id": 484465562,
+            "message": {
+                "message_id": 1,
+                "from": {
+                    "id": 1100421731,
+                    "is_bot": false,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": 1100421731,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "type": "private"
+                },
+                "date": 1745679329,
+                "text": "/start",
+                "entities": [
+                    {
+                        "offset": 0,
+                        "length": 6,
+                        "type": "bot_command"
+                    }
+                ]
+            }
+        },
+        {
+            "update_id": 484465563,
+            "message": {
+                "message_id": 2,
+                "from": {
+                    "id": 1100421731,
+                    "is_bot": false,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": 1100421731,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "type": "private"
+                },
+                "date": 1745679344,
+                "text": "\u0441\u0442\u0430\u0440\u0442"
+            }
+        },
+        {
+            "update_id": 484465564,
+            "message": {
+                "message_id": 3,
+                "from": {
+                    "id": 1100421731,
+                    "is_bot": false,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": 1100421731,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "type": "private"
+                },
+                "date": 1745683068,
+                "text": "/start attach_6",
+                "entities": [
+                    {
+                        "offset": 0,
+                        "length": 6,
+                        "type": "bot_command"
+                    }
+                ]
+            }
+        },
+        {
+            "update_id": 484465565,
+            "message": {
+                "message_id": 4,
+                "from": {
+                    "id": 1100421731,
+                    "is_bot": false,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": 1100421731,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "type": "private"
+                },
+                "date": 1745683337,
+                "text": "/start attach_6",
+                "entities": [
+                    {
+                        "offset": 0,
+                        "length": 6,
+                        "type": "bot_command"
+                    }
+                ]
+            }
+        },
+        {
+            "update_id": 484465566,
+            "message": {
+                "message_id": 5,
+                "from": {
+                    "id": 1100421731,
+                    "is_bot": false,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "language_code": "ru"
+                },
+                "chat": {
+                    "id": 1100421731,
+                    "first_name": "Join",
+                    "username": "NickJoin",
+                    "type": "private"
+                },
+                "date": 1745686855,
+                "text": "/start 6",
+                "entities": [
+                    {
+                        "offset": 0,
+                        "length": 6,
+                        "type": "bot_command"
+                    }
+                ]
+            }
+        }
+    ]
+}
