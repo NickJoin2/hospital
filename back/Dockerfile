@@ -1,38 +1,28 @@
-FROM php:8.2-fpm-alpine3.17
+FROM php:8.2-cli
 
-# Установка зависимостей системы
-RUN apk update && \
-    apk add --no-cache \
-        git \
-        curl \
-        unzip \
-        libpng-dev \
-        libjpeg-turbo-dev \
-        libwebp-dev \
-        zlib-dev \
-        freetype-dev \
-        icu-dev && \
-    docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype && \
-    docker-php-ext-install -j$(nproc) gd pdo pdo_mysql opcache intl bcmath sockets
+# Установка зависимостей
+RUN apt-get update && apt-get install -y \
+    git \
+    zip \
+    unzip \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev
+
+# Установка расширений PHP
+RUN docker-php-ext-install pdo_mysql mbstring xml zip
 
 # Установка Composer
-RUN curl -sS https://getcomposer.org/installer  | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Установка рабочей директории
-WORKDIR /var/www/html
+# Рабочая директория
+WORKDIR /var/www
 
-# Создание директории для кэша Laravel
-RUN mkdir -p /var/www/html/bootstrap/cache && \
-    chmod -R 777 /var/www/html/bootstrap/cache
-
-# Копируем исходные файлы проекта
+# Копируем файлы приложения
 COPY . .
 
-# Установка зависимостей через Composer
-RUN composer install --no-dev --optimize-autoloader
+# Установка зависимостей Composer
+RUN composer install
 
-# Убедимся, что права на storage и bootstrap/cache корректны
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
-
-CMD ["php", "-a", "artisan", "serve", "--host=0.0.0.0"]
+# Запуск встроенного сервера PHP
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
