@@ -1,6 +1,6 @@
 FROM php:8.2-fpm-alpine
 
-# Установка зависимостей
+# Установка системных зависимостей
 RUN apk update && apk add --no-cache \
     linux-headers \
     git \
@@ -14,7 +14,7 @@ RUN apk update && apk add --no-cache \
     libzip-dev \
     oniguruma-dev
 
-# Установка расширений PHP
+# Установка PHP расширений
 RUN docker-php-ext-configure gd --with-jpeg --with-webp && \
     docker-php-ext-install -j$(nproc) \
     gd \
@@ -33,21 +33,22 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Рабочая директория
 WORKDIR /var/www/html
 
-# Создание нужных директорий и установка прав
+# Создание директорий и установка прав
 RUN mkdir -p /var/www/html/bootstrap/cache \
     && chown -R www-data:www-data /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Копируем только файлы, необходимые для установки зависимостей
-COPY composer.json composer.lock ./
+# Проверка существования composer.lock перед копированием
+COPY composer.json ./
+RUN if [ -f composer.lock ]; then COPY composer.lock ./; fi
 
-# Устанавливаем зависимости
+# Установка зависимостей
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Копируем остальные файлы проекта
+# Копирование остальных файлов
 COPY . .
 
-# Устанавливаем правильные права
+# Установка прав
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
