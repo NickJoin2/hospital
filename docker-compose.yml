@@ -1,21 +1,4 @@
-version: '3.8'
-
 services:
-  # Nginx (Web Server)
-  nginx:
-    image: nginx:alpine
-    container_name: laravel-nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./back/public:/var/www/html/public
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
   # React Frontend
   frontend:
     build:
@@ -29,7 +12,6 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - NODE_ENV=development
     networks:
       - app-network
 
@@ -38,7 +20,9 @@ services:
     build:
       context: ./back
       dockerfile: Dockerfile
-    container_name: laravel-php
+    container_name: laravel-php-new-v2
+    ports:
+      - "8000:8000"
     volumes:
       - ./back:/var/www/html
     environment:
@@ -60,19 +44,19 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
+      MYSQL_USER: root
       MYSQL_PASSWORD: secret
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-psecret"]
-      interval: 5s
-      timeout: 10s
-      retries: 10
+    ports:
+      - "3306:3306"
     networks:
       - app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+      start_period: 5s
 
   # phpMyAdmin
   phpmyadmin:
@@ -84,7 +68,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -100,7 +85,6 @@ services:
 
 volumes:
   mysql_data:
-    driver: local
 
 networks:
   app-network:
