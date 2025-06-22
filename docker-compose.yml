@@ -48,6 +48,11 @@ services:
       MYSQL_PASSWORD: secret
     volumes:
       - mysql_data:/var/lib/mysql
+    command:
+      - --innodb-trx=0
+      - --innodb-undo-directory=./
+      - --innodb-log-file-size=16M
+      - --innodb-buffer-pool-size=64M
     ports:
       - "3306:3306"
     networks:
